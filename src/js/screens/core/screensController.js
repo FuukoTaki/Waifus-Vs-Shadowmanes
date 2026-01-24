@@ -1,4 +1,4 @@
-import { KeysInput } from "./inputHandler.js";
+import { KeysInput } from "../../utils/inputHandler.js";
 
 let debug = false;
 
@@ -9,8 +9,8 @@ export class ScreensController {
         this.currentScreen = currentScreen;
         this.currentScreen.load();
 
-        window.addEventListener("game:keyDown", this.onKeyDown);
-        window.addEventListener("game:keyUp", this.onKeyUp);
+        // window.addEventListener("game:keyDown", this.onKeyDown);
+        // window.addEventListener("game:keyUp", this.onKeyUp);
         KeysInput.enable();
     }
 

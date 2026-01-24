@@ -19,9 +19,4 @@ export class Screen {
     remove() {
         throw new Error("Remove method not implemented.");
     }
-
-    // Handle all keyboards/mouse input, etc.
-    handleInput() {
-        throw new Error("Handle Input method not implemented.");
-    }
 }

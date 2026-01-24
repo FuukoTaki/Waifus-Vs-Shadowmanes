@@ -1,18 +1,18 @@
-// ---- ---- ---- ---- ---- ---- ---- ---- ----
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // -- IMPORTS --
 
 import { SingleplayerScreen } from "./screens/singleplayerScreen.js";
-import { ScreensController } from "./utils/screensController.js";
+import { ScreensController } from "./screens/core/screensController.js";
 
-// ---- ---- ---- ---- ---- ---- ---- ---- ----
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // -- GLOBAL VARIABLES --
 
-let canvas, ctx, scale;
+export let canvas, ctx, scale;
 let screenManager;
 
-// ---- ---- ---- ---- ---- ---- ---- ---- ----
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
 // -- GAME SETUP --
 
@@ -40,7 +40,7 @@ function setVariables() {
 }
 
 function addListeners() {
-    window.addEventListener("resize", (e) => {
+    window.addEventListener("resize", () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });

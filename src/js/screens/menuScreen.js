@@ -1,4 +1,4 @@
-import { Screen } from "../utils/screen.js";
+import { Screen } from "./screen.js";
 
 let debug = true;
 
