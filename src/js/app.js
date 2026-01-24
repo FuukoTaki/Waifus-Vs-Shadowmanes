@@ -2,7 +2,7 @@
 
 // -- IMPORTS --
 
-import { MenuScreen } from "./screens/menuScreen.js";
+import { SingleplayerScreen } from "./screens/singleplayerScreen.js";
 import { ScreensController } from "./utils/screensController.js";
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ----
@@ -10,7 +10,6 @@ import { ScreensController } from "./utils/screensController.js";
 // -- GLOBAL VARIABLES --
 
 let canvas, ctx, scale;
-
 let screenManager;
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ----
@@ -37,7 +36,7 @@ function setVariables() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    screenManager = new ScreensController(new MenuScreen());
+    screenManager = new ScreensController(new SingleplayerScreen());
 }
 
 function addListeners() {

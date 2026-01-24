@@ -1,5 +1,7 @@
 import { Screen } from "../utils/screen.js";
 
+let debug = true;
+
 export class MenuScreen extends Screen {
 
     load() {
@@ -10,7 +12,14 @@ export class MenuScreen extends Screen {
 
     }
 
-    handleInput() {
+    handleInput({ type, key, pressedKeys }) {
 
+        if (type === "down") {
+            if (debug) console.log("KEY PRESSED!");
+        }
+
+        if (type === "up") {
+            if (debug) console.log("RELEASED!");
+        }
     }
 }
