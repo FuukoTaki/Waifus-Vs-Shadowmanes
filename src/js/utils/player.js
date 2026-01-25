@@ -7,7 +7,7 @@ export class Player extends Sprite {
         super(x, y, width, height);
         this.hitbox = new Hitbox(x, y, width, height);
 
-        this.movementSpeed = 2;
+        this.movementSpeed = 4;
     }
 
     tick() {

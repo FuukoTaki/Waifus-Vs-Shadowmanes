@@ -1,19 +1,5 @@
 let debug = false;
 
-/**
- * -- KEYS INPUT --
- * 
- * This class detects any key being pressed, and dispatchs an 
- * event to ScreenController class.
- * 
- * ScreenController detects the event and passes it to the
- * current screen.
- * 
- * Current screen receives the event and decide what to do.
- * 
- * @function enable - enable keyboard detection.
- * @function disable - disalble keyboard event.
- */
 export class KeysInput {
 
     // Store all keys being pressed.

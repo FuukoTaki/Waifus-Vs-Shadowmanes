@@ -2,15 +2,14 @@ import { canvas, ctx, scale } from "../app.js";
 import { KeysInput } from "../utils/inputHandler.js";
 import { Screen } from "./core/screen.js";
 import { Player } from "../utils/player.js";
+import { VCam } from "../utils/vCam.js";
+import { spritesSRC } from "../utils/assetsLoader.js";
 
 let debug = false;
 
 export class SingleplayerScreen extends Screen {
 
     load() {
-        this.x = canvas.width / 2;
-        this.y = canvas.height / 2;
-
         console.log("SingleplayerScreen enabled!");
         this.paused = false;
         this.setFrameRate(60);
@@ -22,8 +21,10 @@ export class SingleplayerScreen extends Screen {
     }
 
     startGame() {
-        this.player = new Player(this.x, this.y, 48, 48);
+        this.player = new Player(canvas.width / 2, canvas.height / 2, 48, 48);
         this.player.hitbox.showHitbox();
+
+        this.vCam = new VCam(this.player, 24);
 
         if (debug) console.log("Game started!");
         requestAnimationFrame(this.gameLoopController);
@@ -60,6 +61,7 @@ export class SingleplayerScreen extends Screen {
     }
 
     logic() {
+        this.vCam.track();
         this.playerMovement();
     }
 
@@ -86,10 +88,13 @@ export class SingleplayerScreen extends Screen {
     }
 
     render() {
+        ctx.fillRect(100, 100, 24, 24);
         ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
 
         ctx.strokeStyle = "red";
         ctx.lineWidth = 1;
         if (this.player.hitbox.visible) ctx.strokeRect(this.player.hitbox.x, this.player.hitbox.y, this.player.hitbox.width, this.player.hitbox.height);
+
+        ctx.drawImage(spritesSRC["princessIDLE"], 0, 0);
     }
 }
