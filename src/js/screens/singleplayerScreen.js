@@ -21,7 +21,31 @@ export class SingleplayerScreen extends Screen {
     }
 
     startGame() {
-        this.player = new Player(canvas.width / 2, canvas.height / 2, 48, 48);
+        const playerAnimations = {
+            IDLE: spritesSRC["princessIDLE"],
+            WALK: spritesSRC["princessWALK"],
+            ROLL: spritesSRC["princessROLL"]
+        };
+
+        const playerAnimationsMetadata = {
+            IDLE: {
+                totalFramesX: 6,
+                animationsNumber: 5,
+                delayBetweenFrames: 6
+            },
+            WALK: {
+                totalFramesX: 6,
+                animationsNumber: 5,
+                delayBetweenFrames: 4
+            },
+            ROLL: {
+                totalFramesX: 11,
+                animationsNumber: 5,
+                delayBetweenFrames: 3
+            }
+        };
+
+        this.player = new Player(playerAnimations, playerAnimationsMetadata);
         this.player.hitbox.showHitbox();
 
         this.vCam = new VCam(this.player, 24);
@@ -62,39 +86,11 @@ export class SingleplayerScreen extends Screen {
 
     logic() {
         this.vCam.track();
-        this.playerMovement();
-    }
-
-    playerMovement() {
-        const movementKeys = ["w", "s", "a", "d"];
-        let count = 0;
-
-        for (const key of movementKeys) {
-            if (KeysInput.pressedKeys.has(key)) count++;
-        }
-
-        const speed = this.player.movementSpeed;
-        const auxSpeed = (count >= 2) ? speed / Math.sqrt(2) : speed;
-        const movementSpeed = Math.trunc(auxSpeed * 100) / 100;
-
-        if (KeysInput.pressedKeys.has("w")) this.player.y -= movementSpeed;
-        if (KeysInput.pressedKeys.has("s")) this.player.y += movementSpeed;
-        if (KeysInput.pressedKeys.has("a")) this.player.x -= movementSpeed;
-        if (KeysInput.pressedKeys.has("d")) this.player.x += movementSpeed;
-
         this.player.tick();
-
-        if (debug) console.log(movementSpeed);
     }
 
     render() {
         ctx.fillRect(100, 100, 24, 24);
-        ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
-
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 1;
-        if (this.player.hitbox.visible) ctx.strokeRect(this.player.hitbox.x, this.player.hitbox.y, this.player.hitbox.width, this.player.hitbox.height);
-
-        ctx.drawImage(spritesSRC["princessIDLE"], 0, 0);
+        this.player.draw(ctx);
     }
 }

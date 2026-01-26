@@ -1,10 +1,11 @@
-import { CustomEvents } from "./customEvents.js";
+import { CustomEvents, EventBus } from "./customEvents.js";
 
 export const spritesSRC = {};
 
 const spritesURL = {
     princessIDLE: "./src/img/princess/idle.png",
-    princessWALK: "./src/img/princess/walk.png"
+    princessWALK: "./src/img/princess/walk.png",
+    princessROLL: "./src/img/princess/roll.png"
 };
 
 let debug = false;
@@ -39,14 +40,14 @@ export function loadSpritesheets() {
                     if (debug) console.log(spritesSRC);
 
                     // Call setup to start game config and gameloop.
-                    window.dispatchEvent(new CustomEvent(CustomEvents.ASSETS_LOADED_SUCCESFULLY));
+                    EventBus.dispatchEvent(new Event(CustomEvents.ASSETS_LOAD_SUCCESS));
                 }
             };
 
             // Check if spritesheet does not exist.
             image.onerror = () => {
                 if (debug) console.log("SPRITESHEET DOESN'T EXIST!");
-                window.dispatchEvent(new CustomEvent(CustomEvents.ASSETS_LOADING_FAIL));
+                window.dispatchEvent(new Event(CustomEvents.ASSETS_LOAD_FAIL));
             };
         }
     }

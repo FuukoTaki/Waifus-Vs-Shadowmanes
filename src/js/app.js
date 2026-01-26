@@ -5,7 +5,7 @@
 import { SingleplayerScreen } from "./screens/singleplayerScreen.js";
 import { ScreensController } from "./screens/core/screensController.js";
 import { spritesSRC, loadSpritesheets } from "./utils/assetsLoader.js";
-import { CustomEvents } from "./utils/customEvents.js";
+import { CustomEvents, EventBus } from "./utils/customEvents.js";
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
@@ -38,11 +38,11 @@ function setVariables() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    window.addEventListener(CustomEvents.ASSETS_LOADED_SUCCESFULLY, (e) => {
+    EventBus.addEventListener(CustomEvents.ASSETS_LOAD_SUCCESS, (e) => {
         screenManager = new ScreensController(new SingleplayerScreen());
     });
 
-    window.addEventListener(CustomEvents.ASSETS_LOADING_FAIL, (e) => {
+    EventBus.addEventListener(CustomEvents.ASSETS_LOAD_FAIL, (e) => {
         console.log("FATAL ERROR ON LOADING ASSETS!");
     });
 

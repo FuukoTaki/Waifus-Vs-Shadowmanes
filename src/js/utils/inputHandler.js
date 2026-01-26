@@ -1,3 +1,5 @@
+import { CustomEvents, EventBus } from "./customEvents.js";
+
 let debug = false;
 
 export class KeysInput {
@@ -21,18 +23,7 @@ export class KeysInput {
         this.pressedKeys.add(key);
 
         if (debug) console.log("Key Down Pressed at inputHandler.js");
-
-        // Dispatch event and its metadata.
-        window.dispatchEvent(new CustomEvent(
-            "game:keyDown",
-            {
-                detail: {
-                    pressedKeys: new Set(KeysInput.pressedKeys),
-                    key: e.key,
-                    type: "down"
-                }
-            }
-        ));
+        EventBus.dispatchEvent(new Event(CustomEvents.GAME_KEYDOWN));
     }
 
     // Detects key down released, and dispatches its event.
@@ -44,18 +35,7 @@ export class KeysInput {
         this.pressedKeys.delete(key);
 
         if (debug) console.log("Keys Up Pressed at inputHandler.js");
-
-        // Dispatch event and its metadata.
-        window.dispatchEvent(new CustomEvent(
-            "game:keyUp",
-            {
-                detail: {
-                    pressedKeys: new Set(KeysInput.pressedKeys),
-                    key: e.key,
-                    type: "up"
-                }
-            }
-        ));
+        EventBus.dispatchEvent(new Event(CustomEvents.GAME_KEYUP));
     }
 
     // Enable keyboard detection.

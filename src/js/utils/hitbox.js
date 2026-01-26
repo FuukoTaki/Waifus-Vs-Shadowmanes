@@ -1,13 +1,15 @@
 export class Hitbox {
 
-    constructor(x, y, width, height, lifespan = Infinity) {
-        this.x = x;
-        this.y = y;
+    constructor(width, height, lifespan = Infinity) {
         this.width = width;
         this.height = height;
         this.lifespan = lifespan;
         this.visible = false;
         this.enabled = true;
+    }
+
+    draw(ctx) {
+        if (this.visible) ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
 
     tick() {
@@ -24,8 +26,6 @@ export class Hitbox {
             }
         }
     }
-
-    updatePosition() { }
 
     showHitbox() {
         this.visible = true;
