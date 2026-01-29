@@ -1,3 +1,7 @@
+import { IdleState } from "../stateMachine/idleState.js";
+import { RollState } from "../stateMachine/rollState.js";
+import { StateMachine } from "../stateMachine/stateMachine.js";
+import { WalkState } from "../stateMachine/walkState.js";
 import { Entity } from "./entity.js";
 import { Hitbox } from "./hitbox.js";
 import { KeysInput } from "./inputHandler.js";
@@ -8,6 +12,15 @@ export class Player extends Entity {
         super(spritesheets, animationsMetadata, "right");
         this.hitbox = new Hitbox(30, 36);
         this.updateHitbox();
+
+        this.rollingSpeed = 6;
+
+        this.fsm = new StateMachine(this);
+        this.fsm.add("IDLE", new IdleState());
+        this.fsm.add("WALK", new WalkState());
+        this.fsm.add("ROLL", new RollState());
+
+        this.fsm.set("IDLE");
 
         this.cardinalDirections = {
             FRONT: 0,
@@ -21,17 +34,72 @@ export class Player extends Entity {
         this.diagonalTimeout = 100;
 
         this.movementSpeed = 4;
-        this.isRolling = false;
-        this.rollingSpeed = 6;
-        this.rollingTicks = 30;
-        this.rollingTicksCurrent = this.rollingTicks;
     }
 
     tick() {
-        this.roll();
-        this.movement();
+        this.fsm.update(); // Update state machine.
         this.updateHitbox();
         this.hitbox.tick();
+    }
+
+    tryMoving() {
+        const count = this.getDirection();
+        if (count > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    tryRolling() {
+        if (KeysInput.pressedKeys.has(" ")) {
+            return true;
+        }
+        return false;
+    }
+
+    isRollFinished() {
+        if (this.animationFinished) {
+            return true;
+        }
+        return false;
+    }
+
+    move() {
+        const count = this.getDirection();
+        const speed = this.movementSpeed;
+        const movementSpeed = (count >= 2) ? speed / Math.sqrt(2) : speed;
+
+        if (KeysInput.pressedKeys.has("w")) this.y -= movementSpeed;
+        if (KeysInput.pressedKeys.has("s")) this.y += movementSpeed;
+        if (KeysInput.pressedKeys.has("a")) this.x -= movementSpeed;
+        if (KeysInput.pressedKeys.has("d")) this.x += movementSpeed;
+    }
+
+    roll() {
+        const rollingSpeed = (this.framePosY === 1 || this.framePosY === 3) ? this.rollingSpeed / Math.sqrt(2) : this.rollingSpeed;
+
+        if (this.framePosY === 0) this.y += rollingSpeed;
+
+        if (this.framePosY === 1) {
+            this.y += rollingSpeed;
+            if (this.facingDirection === "left") this.x -= rollingSpeed;
+            if (this.facingDirection === "right") this.x += rollingSpeed;
+        }
+
+        if (this.framePosY === 2) {
+            if (this.facingDirection === "left") this.x -= rollingSpeed;
+            if (this.facingDirection === "right") this.x += rollingSpeed;
+        }
+
+        if (this.framePosY === 3) {
+            this.y -= rollingSpeed;
+            if (this.facingDirection === "left") this.x -= rollingSpeed;
+            if (this.facingDirection === "right") this.x += rollingSpeed;
+        }
+
+        if (this.framePosY === 4) {
+            this.y -= rollingSpeed;
+        }
     }
 
     getDirection() {
@@ -79,65 +147,6 @@ export class Player extends Entity {
         return count;
     }
 
-    roll() {
-        if (this.isRolling) {
-
-            const rollingSpeed = (this.framePosY === 1 || this.framePosY === 3) ? this.rollingSpeed / Math.sqrt(2) : this.rollingSpeed;
-
-            if (this.framePosY === 0) this.y += rollingSpeed;
-
-            if (this.framePosY === 1) {
-                this.y += rollingSpeed;
-                if (this.facingDirection === "left") this.x -= rollingSpeed;
-                if (this.facingDirection === "right") this.x += rollingSpeed;
-            }
-
-            if (this.framePosY === 2) {
-                if (this.facingDirection === "left") this.x -= rollingSpeed;
-                if (this.facingDirection === "right") this.x += rollingSpeed;
-            }
-
-            if (this.framePosY === 3) {
-                this.y -= rollingSpeed;
-                if (this.facingDirection === "left") this.x -= rollingSpeed;
-                if (this.facingDirection === "right") this.x += rollingSpeed;
-            }
-
-            if (this.framePosY === 4) {
-                this.y -= rollingSpeed;
-            }
-
-            this.rollingTicksCurrent--;
-            if (this.rollingTicksCurrent <= 0) {
-                this.rollingTicksCurrent = this.rollingTicks;
-                this.isRolling = false;
-            }
-        }
-
-        if (KeysInput.pressedKeys.has(" ") && !this.isRolling) {
-            this.isRolling = true;
-            this.getDirection();
-            this.switchAnimation("ROLL");
-        }
-    }
-
-    movement() {
-        if (this.isRolling) return;
-
-        const count = this.getDirection();
-
-        const speed = this.movementSpeed;
-        const movementSpeed = (count >= 2) ? speed / Math.sqrt(2) : speed;
-
-        if (KeysInput.pressedKeys.has("w")) this.y -= movementSpeed;
-        if (KeysInput.pressedKeys.has("s")) this.y += movementSpeed;
-        if (KeysInput.pressedKeys.has("a")) this.x -= movementSpeed;
-        if (KeysInput.pressedKeys.has("d")) this.x += movementSpeed;
-
-        if (count > 0) this.switchAnimation("WALK");
-        if (count === 0) this.switchAnimation("IDLE");
-    }
-
     updateHitbox() {
         this.hitbox.x = this.x + this.width / 2 - this.hitbox.width / 2;
         this.hitbox.y = 16 + this.y + this.height / 2 - this.hitbox.height / 2;
@@ -147,6 +156,5 @@ export class Player extends Entity {
         super.draw(ctx);
         this.hitbox.draw(ctx);
     }
-
 
 }

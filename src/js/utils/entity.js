@@ -21,18 +21,15 @@ export class Entity {
         this.height = spritesheet.height / animationMetadata.animationsNumber;
         this.delayBetweenFrames = animationMetadata.delayBetweenFrames;
         this.totalFrames = animationMetadata.totalFramesX;
-
-        this.resetAnimationData();
-    }
-
-    resetAnimationData() {
         this.delayTimer = 0;
         this.framePosX = 0;
+        this.animationFinished = false;
     }
 
     draw(ctx) {
-
         const spritesheet = this.spritesheets[this.currentAnimationName];
+        const drawX = Math.floor(this.x);
+        const drawY = Math.floor(this.y);
 
         this.delayTimer++;
         if (this.delayTimer >= this.delayBetweenFrames) {
@@ -40,7 +37,13 @@ export class Entity {
             this.delayTimer = 0;
 
             if (this.framePosX >= this.totalFrames) {
-                this.framePosX = 0;
+                if (this.animationsMetadata[this.currentAnimationName].loop) {
+
+                    this.framePosX = 0;
+                } else {
+                    this.framePosX = this.totalFrames - 1;
+                    this.animationFinished = true;
+                }
             }
         }
 
@@ -50,7 +53,7 @@ export class Entity {
                 this.framePosX * this.width,
                 this.framePosY * this.height,
                 this.width, this.height,
-                this.x, this.y,
+                drawX, drawY,
                 this.width, this.height
             );
         }
@@ -63,7 +66,7 @@ export class Entity {
                 this.framePosX * this.width,
                 this.framePosY * this.height,
                 this.width, this.height,
-                -(this.x + this.width), this.y,
+                -(drawX + this.width), drawY,
                 this.width, this.height);
             ctx.restore();
         }

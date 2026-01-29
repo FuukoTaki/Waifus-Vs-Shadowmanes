@@ -1,5 +1,4 @@
 import { canvas, ctx, scale } from "../app.js";
-import { KeysInput } from "../utils/inputHandler.js";
 import { Screen } from "./core/screen.js";
 import { Player } from "../utils/player.js";
 import { VCam } from "../utils/vCam.js";
@@ -29,19 +28,25 @@ export class SingleplayerScreen extends Screen {
 
         const playerAnimationsMetadata = {
             IDLE: {
+                name: "IDLE",
                 totalFramesX: 6,
                 animationsNumber: 5,
-                delayBetweenFrames: 6
+                delayBetweenFrames: 6,
+                loop: true
             },
             WALK: {
+                name: "WALK",
                 totalFramesX: 6,
                 animationsNumber: 5,
-                delayBetweenFrames: 4
+                delayBetweenFrames: 4,
+                loop: true
             },
             ROLL: {
+                name: "ROLL",
                 totalFramesX: 11,
                 animationsNumber: 5,
-                delayBetweenFrames: 3
+                delayBetweenFrames: 3,
+                loop: false
             }
         };
 
